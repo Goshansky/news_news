@@ -2,24 +2,26 @@ import { notFound } from "next/navigation";
 import { getNewsById } from "../../data/newsApi";
 import Link from "next/link";
 import styles from "./page.module.css";
+import { use } from "react";
 
-// Используем dynamic import для генерации параметров
 export const dynamic = "force-dynamic";
 
-// Генерация параметров для статических путей
 export async function generateStaticParams() {
     const news = await import("../../data/news.json");
     return news.default.map((item) => ({ id: item.id.toString() }));
 }
 
-// Компонент страницы
-export default async function NewsPage({ params }: { params: { id: string } }) {
-    // Получаем параметр асинхронно
-    const { id } = await params; // Ожидаем параметр асинхронно
+export default function NewsPage({
+                                     params,
+                                 }: {
+    params: Promise<{ id: string }>;
+}) {
+    const { id } = use(params);
+    const news = use(getNewsById(id));
 
-    const news = await getNewsById(id);
     if (!news) notFound();
 
+    // Форматирование даты на сервере
     const formattedDate = new Date(news.date * 1000).toLocaleDateString("ru-RU", {
         day: "numeric",
         month: "long",
@@ -32,28 +34,23 @@ export default async function NewsPage({ params }: { params: { id: string } }) {
 
     const fallbackImage = "https://images.techinsider.ru/upload/img_cache/aac/aacbbe0ebbeb260080c7e4706e13fc2b_cropped_320x320.webp";
 
-    // Выбираем первую доступную картинку
     const firstPhoto = photos[0]?.image?.src;
     const firstLinkPhoto = links.find((a) => a.image?.src)?.image?.src;
     const imageToShow = firstPhoto || firstLinkPhoto || fallbackImage;
 
     return (
         <div className={styles.container}>
-            {/* Кнопка возврата */}
             <Link href="/" className={styles.backLink}>
                 ← Все новости
             </Link>
 
-            {/* Заголовок */}
             <h1 className={styles.title}>{news.text.split("\n")[0]}</h1>
 
-            {/* Мета-информация */}
             <div className={styles.meta}>
                 <span className={styles.type}>{news.type.replace("Вика_", "")}</span>
                 <time className={styles.date}>{formattedDate}</time>
             </div>
 
-            {/* Галерея изображений */}
             <div className={styles.gallery}>
                 <img
                     src={imageToShow}
@@ -62,7 +59,6 @@ export default async function NewsPage({ params }: { params: { id: string } }) {
                 />
             </div>
 
-            {/* Основной текст */}
             <div className={styles.content}>
                 {news.text.split("\n").map((line, i) => (
                     <p key={i} className={styles.paragraph}>
@@ -71,7 +67,6 @@ export default async function NewsPage({ params }: { params: { id: string } }) {
                 ))}
             </div>
 
-            {/* Ссылки */}
             {links.length > 0 && (
                 <div className={styles.links}>
                     <h2 className={styles.sectionTitle}>Полезные ссылки</h2>
@@ -80,8 +75,8 @@ export default async function NewsPage({ params }: { params: { id: string } }) {
                             <span className={styles.linkTitle}>{link.titleLink}</span>
                             {link.description && (
                                 <span className={styles.linkDescription}>
-                                    {link.description}
-                                </span>
+                  {link.description}
+                </span>
                             )}
                         </a>
                     ))}
@@ -90,7 +85,4 @@ export default async function NewsPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
-
-
-
 
