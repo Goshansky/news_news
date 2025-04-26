@@ -1,0 +1,83 @@
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 12px;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* Декоративная полоска для типа новости */
+.type {
+  position: relative;
+  padding-left: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.type::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 3px;
+  border-radius: 2px;
+}
+
+/* Анимации */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card::before {
+  background: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(0, 0, 0, 0.08) 50%,
+    /* Темнее для светлой темы */ transparent 75%
+  );
+  animation: metalFlow 2s linear; /* Убрано infinite */
+}
+
+.card:hover::before {
+  animation: metalFlow 2s linear forwards; /* Запуск только при наведении */
+}
+
+@keyframes metalFlow {
+  to {
+    transform: translate(50%, 50%) rotate(45deg);
+  }
+}
+
+.title {
+  font-size: 1.1rem;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.date {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.imageWrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}

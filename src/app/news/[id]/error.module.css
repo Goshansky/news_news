@@ -1,0 +1,15 @@
+.container {
+  text-align: center;
+  padding: 2rem;
+  color: #e53e3e;
+}
+
+.retry-button {
+  background: #4299e1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
