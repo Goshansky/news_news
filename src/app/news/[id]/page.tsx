@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 // Используем dynamic import для генерации параметров
 export const dynamic = "force-dynamic";
 
+// Генерация параметров для статических путей
 export async function generateStaticParams() {
     const news = await import("../../data/news.json");
     return news.default.map((item) => ({ id: item.id.toString() }));
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 // Компонент страницы
 export default async function NewsPage({ params }: { params: { id: string } }) {
     // Получаем параметр асинхронно
-    const { id } = params;
+    const { id } = await params; // Ожидаем параметр асинхронно
 
     const news = await getNewsById(id);
     if (!news) notFound();
@@ -89,6 +90,7 @@ export default async function NewsPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
+
 
 
 
